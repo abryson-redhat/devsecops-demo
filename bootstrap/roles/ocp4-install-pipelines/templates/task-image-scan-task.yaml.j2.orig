@@ -1,8 +1,7 @@
-apiVersion: tekton.dev/v1
+apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: rox-image-scan
-  namespace: cicd
 spec:
   params:
     - name: rox_central_endpoint

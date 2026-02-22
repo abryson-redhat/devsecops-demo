@@ -1,7 +1,8 @@
-apiVersion: tekton.dev/v1beta1
-kind: ClusterTask
+apiVersion: tekton.dev/v1
+kind: Task
 metadata:
   name: rox-deployment-check
+  namespace: cicd
 spec:
   params:
     - name: GIT_REPOSITORY

@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: petclinic-build-dev
+  name: petclinic-build-stage
   namespace: cicd
 spec:
   params:
@@ -21,9 +21,9 @@ spec:
       type: string
       default: latest
       description: The application image tag to build
-    - name: DEV_NAMESPACE
+    - name: STAGE_NAMESPACE
       type: string
-      default: devsecops-dev
+      default: devsecops-qa
       description: The namespace for Stage environments
     - name: APP_TESTS_GIT
       type: string
@@ -36,8 +36,7 @@ spec:
   - name: source-clone
     taskRef:
       name: git-clone
-      namespace: {{ pipeline_namespace }}
-      kind: Task
+      kind: ClusterTask
     workspaces:
     - name: output
       workspace: workspace
@@ -132,7 +131,7 @@ spec:
       - name: PATH_CONTEXT
         value: spring-petclinic/target
       - name: IMAGE_NAME
-        value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-dev
+        value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-stage
       - name: IMAGE_TAG
         value: $(params.APP_IMAGE_TAG)
     workspaces:
@@ -147,7 +146,7 @@ spec:
       - name: IMAGE
         value: "image-registry.openshift-image-registry.svc:5000/{{pipeline_namespace}}/cosign-pod"
       - name: SIGNATURE_IMAGE
-        value: "{{ quay_route}}/{{ quay_org_name }}/spring-petclinic-dev"
+        value: "{{ quay_route}}/{{ quay_org_name }}/spring-petclinic-stage"
       - name: ARGS
         value: 
           - "sign"
@@ -158,11 +157,10 @@ spec:
     - build-image
     taskRef:
       name: rox-image-scan
-      namespace: {{ pipeline_namespace }}
-      kind: Task
+      kind: ClusterTask
     params:
     - name: image
-      value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-dev
+      value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-stage
     - name: rox_api_token
       value: roxsecrets
     - name: rox_central_endpoint
@@ -176,11 +174,10 @@ spec:
     - build-image
     taskRef:
       name: rox-image-check
-      namespace: {{ pipeline_namespace }}
-      kind: Task
+      kind: ClusterTask
     params:
     - name: image
-      value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-dev
+      value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-stage
     - name: rox_api_token
       value: roxsecrets
     - name: rox_central_endpoint
@@ -192,8 +189,7 @@ spec:
     - build-image
     taskRef:
       name: rox-deployment-check
-      namespace: {{ pipeline_namespace }}
-      kind: Task
+      kind: ClusterTask
     params:
     - name: GIT_REPOSITORY
       value: "$(params.APP_MANIFESTS_GIT)"
@@ -226,11 +222,11 @@ spec:
       - name: CURRENT_IMAGE
         value: quay.io/siamaksade/spring-petclinic:latest
       - name: NEW_IMAGE
-        value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-dev
+        value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-stage
       - name: NEW_DIGEST
         value: "$(tasks.build-image.results.IMAGE_DIGEST)"
       - name: KUSTOMIZATION_PATH
-        value: environments/dev
+        value: environments/stage
     workspaces:
     - name: workspace
       workspace: workspace
@@ -241,12 +237,11 @@ spec:
       - update-deployment
     params:
       - name: application-name
-        value: dev-spring-petclinic
+        value: stage-spring-petclinic
   - name: perf-tests-clone
     taskRef:
       name: git-clone
-      namespace: {{ pipeline_namespace }}
-      kind: Task
+      kind: ClusterTask
     workspaces:
     - name: output
       workspace: workspace
@@ -266,7 +261,7 @@ spec:
       - perf-tests-clone
     params:
       - name: APP_URL
-        value: "http://spring-petclinic.$(params.DEV_NAMESPACE).svc.cluster.local:8080"
+        value: "http://spring-petclinic.$(params.STAGE_NAMESPACE).svc.cluster.local:8080"
     workspaces:
     - name: workspace
       workspace: workspace
@@ -277,7 +272,7 @@ spec:
       - perf-tests-clone
     params:
       - name: APP_URL
-        value: "http://spring-petclinic.$(params.DEV_NAMESPACE).svc.cluster.local:8080"
+        value: "http://spring-petclinic.$(params.STAGE_NAMESPACE).svc.cluster.local:8080"
     workspaces:
     - name: simulations
       workspace: workspace

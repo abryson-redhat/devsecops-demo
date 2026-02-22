@@ -36,8 +36,7 @@ spec:
   - name: source-clone
     taskRef:
       name: git-clone
-      namespace: {{ pipeline_namespace }}
-      kind: Task
+      kind: ClusterTask
     workspaces:
     - name: output
       workspace: workspace
@@ -132,37 +131,21 @@ spec:
       - name: PATH_CONTEXT
         value: spring-petclinic/target
       - name: IMAGE_NAME
-        value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-dev
+        value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/spring-petclinic
       - name: IMAGE_TAG
         value: $(params.APP_IMAGE_TAG)
     workspaces:
     - name: source
       workspace: workspace
-  - name: image-sign
-    taskRef:
-      name: cosign-task
-    runAfter:
-    - build-image
-    params:
-      - name: IMAGE
-        value: "image-registry.openshift-image-registry.svc:5000/{{pipeline_namespace}}/cosign-pod"
-      - name: SIGNATURE_IMAGE
-        value: "{{ quay_route}}/{{ quay_org_name }}/spring-petclinic-dev"
-      - name: ARGS
-        value: 
-          - "sign"
-          - "--allow-insecure-registry"
-          - "--key k8s://{{ pipeline_namespace }}/{{ secret_generate_name }}"
   - name: image-scan
     runAfter:
     - build-image
     taskRef:
       name: rox-image-scan
-      namespace: {{ pipeline_namespace }}
-      kind: Task
+      kind: ClusterTask
     params:
     - name: image
-      value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-dev
+      value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/spring-petclinic
     - name: rox_api_token
       value: roxsecrets
     - name: rox_central_endpoint
@@ -176,11 +159,10 @@ spec:
     - build-image
     taskRef:
       name: rox-image-check
-      namespace: {{ pipeline_namespace }}
-      kind: Task
+      kind: ClusterTask
     params:
     - name: image
-      value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-dev
+      value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/spring-petclinic
     - name: rox_api_token
       value: roxsecrets
     - name: rox_central_endpoint
@@ -192,8 +174,7 @@ spec:
     - build-image
     taskRef:
       name: rox-deployment-check
-      namespace: {{ pipeline_namespace }}
-      kind: Task
+      kind: ClusterTask
     params:
     - name: GIT_REPOSITORY
       value: "$(params.APP_MANIFESTS_GIT)"
@@ -210,7 +191,6 @@ spec:
       workspace: workspace
   - name: update-deployment
     runAfter:
-    - image-sign
     - image-scan
     - image-check
     - deploy-check
@@ -226,7 +206,7 @@ spec:
       - name: CURRENT_IMAGE
         value: quay.io/siamaksade/spring-petclinic:latest
       - name: NEW_IMAGE
-        value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-dev
+        value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/spring-petclinic
       - name: NEW_DIGEST
         value: "$(tasks.build-image.results.IMAGE_DIGEST)"
       - name: KUSTOMIZATION_PATH
@@ -245,8 +225,7 @@ spec:
   - name: perf-tests-clone
     taskRef:
       name: git-clone
-      namespace: {{ pipeline_namespace }}
-      kind: Task
+      kind: ClusterTask
     workspaces:
     - name: output
       workspace: workspace

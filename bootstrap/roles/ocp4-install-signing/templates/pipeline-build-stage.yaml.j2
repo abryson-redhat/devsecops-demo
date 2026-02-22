@@ -36,7 +36,8 @@ spec:
   - name: source-clone
     taskRef:
       name: git-clone
-      kind: ClusterTask
+      namespace: {{ pipeline_namespace }}
+      kind: Task
     workspaces:
     - name: output
       workspace: workspace
@@ -157,7 +158,8 @@ spec:
     - build-image
     taskRef:
       name: rox-image-scan
-      kind: ClusterTask
+      namespace: {{ pipeline_namespace }}
+      kind: Task
     params:
     - name: image
       value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-stage
@@ -174,7 +176,8 @@ spec:
     - build-image
     taskRef:
       name: rox-image-check
-      kind: ClusterTask
+      namespace: {{ pipeline_namespace }}
+      kind: Task
     params:
     - name: image
       value: {{ quay_route}}/{{ quay_org_name }}/spring-petclinic-stage
@@ -189,7 +192,8 @@ spec:
     - build-image
     taskRef:
       name: rox-deployment-check
-      kind: ClusterTask
+      namespace: {{ pipeline_namespace }}
+      kind: Task
     params:
     - name: GIT_REPOSITORY
       value: "$(params.APP_MANIFESTS_GIT)"
@@ -241,7 +245,8 @@ spec:
   - name: perf-tests-clone
     taskRef:
       name: git-clone
-      kind: ClusterTask
+      namespace: {{ pipeline_namespace }}
+      kind: Task
     workspaces:
     - name: output
       workspace: workspace
