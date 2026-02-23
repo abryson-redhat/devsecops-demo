@@ -147,15 +147,14 @@ spec:
     runAfter:
     - build-image
     taskRef:
-      name: rox-image-scan
       resolver: cluster
-#     params:
-#       - name: name
-#         value: image-scan
-#       - name: kind
-#         value: task
-#       - name: namespace
-#         value: $(context.pipelineRun.namespace)
+      params:
+        - name: name
+          value: rox-image-scan
+        - name: kind
+          value: task
+        - name: namespace
+          value: $(context.pipelineRun.namespace)
     params:
     - name: image
       value: image-registry.openshift-image-registry.svc.cluster.local:5000/$(context.pipelineRun.namespace)/spring-petclinic
@@ -171,15 +170,14 @@ spec:
     runAfter:
     - build-image
     taskRef:
-      name: rox-image-check
       resolver: cluster
-#     params:
-#       - name: name
-#         value: image-check
-#       - name: kind
-#         value: task
-#       - name: namespace
-#         value: $(context.pipelineRun.namespace)
+      params:
+        - name: name
+          value: rox-image-check
+        - name: kind
+          value: task
+        - name: namespace
+          value: $(context.pipelineRun.namespace)
     params:
     - name: image
       value: image-registry.openshift-image-registry.svc.cluster.local:5000/$(context.pipelineRun.namespace)/spring-petclinic
@@ -193,15 +191,14 @@ spec:
     runAfter:
     - build-image
     taskRef:
-      name: rox-deployment-check
       resolver: cluster
-#     params:
-#       - name: name
-#         value: deployment-check
-#       - name: kind
-#         value: task
-#       - name: namespace
-#         value: $(context.pipelineRun.namespace)
+      params:
+        - name: name
+          value: rox-deployment-check
+        - name: kind
+          value: task
+        - name: namespace
+          value: $(context.pipelineRun.namespace)
     params:
     - name: GIT_REPOSITORY
       value: "$(params.APP_MANIFESTS_GIT)"
@@ -251,15 +248,14 @@ spec:
         value: dev-spring-petclinic
   - name: perf-tests-clone
     taskRef:
-      name: git-clone
       resolver: cluster
-#     params:
-#       - name: name
-#         value: git-clone
-#       - name: kind
-#         value: task
-#       - name: namespace
-#         value: $(context.pipelineRun.namespace)
+      params:
+        - name: name
+          value: git-clone
+        - name: kind
+          value: task
+        - name: namespace
+          value: $(context.pipelineRun.namespace)
     workspaces:
     - name: output
       workspace: workspace

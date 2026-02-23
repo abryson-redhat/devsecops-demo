@@ -1,0 +1,153 @@
+GROUP:      tekton.dev
+KIND:       Pipeline
+VERSION:    v1
+
+DESCRIPTION:
+    Pipeline describes a list of Tasks to execute. It expresses how outputs
+    of tasks feed into inputs of subsequent tasks.
+    
+FIELDS:
+  apiVersion	<string>
+  kind	<string>
+  metadata	<ObjectMeta>
+    annotations	<map[string]string>
+    creationTimestamp	<string>
+    deletionGracePeriodSeconds	<integer>
+    deletionTimestamp	<string>
+    finalizers	<[]string>
+    generateName	<string>
+    generation	<integer>
+    labels	<map[string]string>
+    managedFields	<[]ManagedFieldsEntry>
+      apiVersion	<string>
+      fieldsType	<string>
+      fieldsV1	<FieldsV1>
+      manager	<string>
+      operation	<string>
+      subresource	<string>
+      time	<string>
+    name	<string>
+    namespace	<string>
+    ownerReferences	<[]OwnerReference>
+      apiVersion	<string> -required-
+      blockOwnerDeletion	<boolean>
+      controller	<boolean>
+      kind	<string> -required-
+      name	<string> -required-
+      uid	<string> -required-
+    resourceVersion	<string>
+    selfLink	<string>
+    uid	<string>
+  spec	<Object>
+    description	<string>
+    displayName	<string>
+    finally	<[]Object>
+      description	<string>
+      displayName	<string>
+      matrix	<Object>
+        include	<[]Object>
+          name	<string>
+          params	<[]Object>
+            name	<string> -required-
+            value	<Object> -required-
+        params	<[]Object>
+          name	<string> -required-
+          value	<Object> -required-
+      name	<string>
+      onError	<string>
+      params	<[]Object>
+        name	<string> -required-
+        value	<Object> -required-
+      pipelineRef	<Object>
+        apiVersion	<string>
+        name	<string>
+        params	<[]Object>
+          name	<string> -required-
+          value	<Object> -required-
+        resolver	<string>
+      pipelineSpec	<Object>
+      retries	<integer>
+      runAfter	<[]string>
+      taskRef	<Object>
+        apiVersion	<string>
+        kind	<string>
+        name	<string>
+        params	<[]Object>
+          name	<string> -required-
+          value	<Object> -required-
+        resolver	<string>
+      taskSpec	<Object>
+      timeout	<string>
+      when	<[]Object>
+        cel	<string>
+        input	<string>
+        operator	<string>
+        values	<[]string>
+      workspaces	<[]Object>
+        name	<string> -required-
+        subPath	<string>
+        workspace	<string>
+    params	<[]Object>
+      default	<Object>
+      description	<string>
+      enum	<[]string>
+      name	<string> -required-
+      properties	<map[string]Object>
+        type	<string>
+      type	<string>
+    results	<[]Object>
+      description	<string>
+      name	<string> -required-
+      type	<string>
+      value	<Object> -required-
+    tasks	<[]Object>
+      description	<string>
+      displayName	<string>
+      matrix	<Object>
+        include	<[]Object>
+          name	<string>
+          params	<[]Object>
+            name	<string> -required-
+            value	<Object> -required-
+        params	<[]Object>
+          name	<string> -required-
+          value	<Object> -required-
+      name	<string>
+      onError	<string>
+      params	<[]Object>
+        name	<string> -required-
+        value	<Object> -required-
+      pipelineRef	<Object>
+        apiVersion	<string>
+        name	<string>
+        params	<[]Object>
+          name	<string> -required-
+          value	<Object> -required-
+        resolver	<string>
+      pipelineSpec	<Object>
+      retries	<integer>
+      runAfter	<[]string>
+      taskRef	<Object>
+        apiVersion	<string>
+        kind	<string>
+        name	<string>
+        params	<[]Object>
+          name	<string> -required-
+          value	<Object> -required-
+        resolver	<string>
+      taskSpec	<Object>
+      timeout	<string>
+      when	<[]Object>
+        cel	<string>
+        input	<string>
+        operator	<string>
+        values	<[]string>
+      workspaces	<[]Object>
+        name	<string> -required-
+        subPath	<string>
+        workspace	<string>
+    workspaces	<[]Object>
+      description	<string>
+      name	<string> -required-
+      optional	<boolean>
+
