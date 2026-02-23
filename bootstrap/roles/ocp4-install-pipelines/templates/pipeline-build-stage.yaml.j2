@@ -1,4 +1,4 @@
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: petclinic-build-stage
@@ -28,7 +28,7 @@ spec:
     - name: APP_TESTS_GIT
       type: string
       description: The application test cases git repository
-      default: https://github.com/rcarrata/spring-petclinic-gatling
+      default: https://github.com/abryson-redhat/spring-petclinic-gatling
   workspaces:
   - name: workspace
   - name: maven-settings
@@ -150,13 +150,13 @@ spec:
     taskRef:
       name: rox-image-scan
       resolver: cluster
-      params:
-        - name: name
-          value: image-scan
-        - name: kind
-          value: task
-        - name: namespace
-          value: $(context.pipelineRun.namespace)
+#     params:
+#       - name: name
+#         value: image-scan
+#       - name: kind
+#         value: task
+#       - name: namespace
+#         value: $(context.pipelineRun.namespace)
     params:
     - name: image
       value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/spring-petclinic
@@ -174,13 +174,13 @@ spec:
     taskRef:
       name: rox-image-check
       resolver: cluster
-      params:
-        - name: name
-          value: image-check
-        - name: kind
-          value: task
-        - name: namespace
-          value: $(context.pipelineRun.namespace)
+#     params:
+#       - name: name
+#         value: image-check
+#       - name: kind
+#         value: task
+#       - name: namespace
+#         value: $(context.pipelineRun.namespace)
     params:
     - name: image
       value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/spring-petclinic
@@ -196,13 +196,13 @@ spec:
     taskRef:
       name: rox-deployment-check
       resolver: cluster
-      params:
-        - name: name
-          value: deployment-check
-        - name: kind
-          value: task
-        - name: namespace
-          value: $(context.pipelineRun.namespace)
+#     params:
+#       - name: name
+#         value: deployment-check
+#       - name: kind
+#         value: task
+#       - name: namespace
+#         value: $(context.pipelineRun.namespace)
     params:
     - name: GIT_REPOSITORY
       value: "$(params.APP_MANIFESTS_GIT)"
@@ -254,13 +254,13 @@ spec:
     taskRef:
       name: git-clone
       resolver: cluster
-      params:
-        - name: name
-          value: git-clone
-        - name: kind
-          value: task
-        - name: namespace
-          value: $(context.pipelineRun.namespace)
+#     params:
+#       - name: name
+#         value: git-clone
+#       - name: kind
+#         value: task
+#       - name: namespace
+#         value: $(context.pipelineRun.namespace)
     workspaces:
     - name: output
       workspace: workspace
